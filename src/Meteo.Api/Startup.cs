@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Meteo.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,11 @@ namespace Meteo.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // var options = new WeatherServiceOptions();
+            // Configuration.GetSection("weatherService").Bind(options);
+
             services.AddMvc();
+            services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,7 +38,12 @@ namespace Meteo.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            //app.Run(async ctx => Console.WriteLine($"PATH: {ctx.Request.Path}"));
+            // app.Use(async (ctx, next) =>
+            // {
+            //     Console.WriteLine($"PATH: {ctx.Request.Path}");
+            //     await next();
+            // });
             app.UseMvc();
         }
     }
