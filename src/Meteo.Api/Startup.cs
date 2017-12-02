@@ -48,6 +48,10 @@ namespace Meteo.Api
             // services.AddScoped<ICityService,CityService>();
             // services.AddSingleton<ICityRepository,InMemoryCityRepository>();
             services.AddSingleton<IMapper>(_ => AutoMapperConfig.GetMapper());
+            services.AddAuthorization(x => x.AddPolicy("require-admin", p => 
+            {
+                p.RequireRole("admin");
+            }));
 
             services.AddEntityFrameworkSqlServer()
                     .AddEntityFrameworkInMemoryDatabase()

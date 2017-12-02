@@ -19,7 +19,7 @@ namespace Meteo.Core.Security
             var section = configuration.GetSection("jwt");
             var options = new JwtOptions();
             section.Bind(options);
-            services.AddSingleton(options);
+            services.AddSingleton<JwtOptions>(options);
             services.AddSingleton<IJwtHandler,JwtHandler>();
             services.AddSingleton<IPasswordHasher<User>,PasswordHasher<User>>();
             services.AddAuthentication()

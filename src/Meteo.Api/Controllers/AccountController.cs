@@ -33,7 +33,8 @@ namespace Meteo.Api.Controllers
 
 
         [HttpGet("secure")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,  
+            Policy = "require-admin")]
         public IActionResult Get()
             => Content($"Hello {User.Identity.Name}");        
     }
