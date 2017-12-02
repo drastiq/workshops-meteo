@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Meteo.Api.Framework;
 using Meteo.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,24 +28,30 @@ namespace Meteo.Api
             // var options = new WeatherServiceOptions();
             // Configuration.GetSection("weatherService").Bind(options);
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddXmlSerializerFormatters();
+            services.AddLogging();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
             services.AddScoped<IWeatherService,WeatherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            ILoggerFactory loggerFactory)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("local"))
             {
                 app.UseDeveloperExceptionPage();
             }
+            loggerFactory.AddConsole().AddDebug();
             //app.Run(async ctx => Console.WriteLine($"PATH: {ctx.Request.Path}"));
             // app.Use(async (ctx, next) =>
             // {
             //     Console.WriteLine($"PATH: {ctx.Request.Path}");
             //     await next();
             // });
+            //app.UseExceptionHandler("/error");
+            app.UseErrorHandler();
             app.UseMvc();
         }
     }

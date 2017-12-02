@@ -10,5 +10,9 @@ namespace Meteo.Api.Controllers
         [HttpGet]
         public IActionResult Get()
             => Content($"Hello from Meteo API.");
+
+        [HttpGet("error")]
+        public IActionResult Error()
+            => Content("There was an error.");
     }
 }
