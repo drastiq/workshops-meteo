@@ -14,7 +14,7 @@ namespace Meteo.Core.Domain
         public City(string name)
         {
             Id = Guid.NewGuid();
-            Name = name;
+            Name = name.ToLowerInvariant();
         }
     }
 }
