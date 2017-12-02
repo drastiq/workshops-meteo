@@ -10,6 +10,7 @@ using Meteo.Core.DI;
 using Meteo.Core.EF;
 using Meteo.Core.Mapper;
 using Meteo.Core.Repositories;
+using Meteo.Core.Security;
 using Meteo.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +43,7 @@ namespace Meteo.Api
             services.AddMemoryCache();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
             services.Configure<SqlOptions>(Configuration.GetSection("sql"));
+            services.AddJwt();
             // services.AddScoped<IWeatherService,WeatherService>();
             // services.AddScoped<ICityService,CityService>();
             // services.AddSingleton<ICityRepository,InMemoryCityRepository>();

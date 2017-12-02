@@ -1,4 +1,6 @@
 using System.Text;
+using Meteo.Core.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +21,7 @@ namespace Meteo.Core.Security
             section.Bind(options);
             services.AddSingleton(options);
             services.AddSingleton<IJwtHandler,JwtHandler>();
+            services.AddSingleton<IPasswordHasher<User>,PasswordHasher<User>>();
             services.AddAuthentication()
                 .AddJwtBearer(cfg => 
                 {
