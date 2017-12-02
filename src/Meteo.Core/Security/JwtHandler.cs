@@ -17,9 +17,9 @@ namespace Meteo.Core.Security
         private readonly SigningCredentials _signingCredentials;
         private readonly JwtHeader _jwtHeader;
 
-        public JwtHandler(IOptions<JwtOptions> options)
+        public JwtHandler(JwtOptions options)
         {
-            _options = options.Value;
+            _options = options;
             _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
             _signingCredentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
             _jwtHeader = new JwtHeader(_signingCredentials);
