@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Meteo.Api.Framework;
+using Meteo.Core.DI;
 using Meteo.Core.Mapper;
 using Meteo.Core.Repositories;
 using Meteo.Core.Services;
@@ -24,9 +27,10 @@ namespace Meteo.Api
         }
 
         public IConfiguration Configuration { get; }
+        public IContainer Container { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // var options = new WeatherServiceOptions();
             // Configuration.GetSection("weatherService").Bind(options);
@@ -36,15 +40,22 @@ namespace Meteo.Api
             services.AddLogging();
             services.AddMemoryCache();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
-            services.AddScoped<IWeatherService,WeatherService>();
-            services.AddScoped<ICityService,CityService>();
-            services.AddSingleton<ICityRepository,InMemoryCityRepository>();
+            // services.AddScoped<IWeatherService,WeatherService>();
+            // services.AddScoped<ICityService,CityService>();
+            // services.AddSingleton<ICityRepository,InMemoryCityRepository>();
             services.AddSingleton<IMapper>(_ => AutoMapperConfig.GetMapper());
+
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule<ServicesModule>();
+            Container = builder.Build();
+
+            return new AutofacServiceProvider(Container);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             if (env.IsDevelopment() || env.IsEnvironment("local"))
             {
@@ -60,6 +71,7 @@ namespace Meteo.Api
             //app.UseExceptionHandler("/error");
             app.UseErrorHandler();
             app.UseMvc();
+            appLifetime.ApplicationStopped.Register(() => Container.Dispose());
         }
     }
 }
