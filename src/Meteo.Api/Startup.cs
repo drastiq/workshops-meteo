@@ -29,6 +29,7 @@ namespace Meteo.Api
 
             services.AddMvc();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
+            services.AddScoped<IWeatherService,WeatherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
