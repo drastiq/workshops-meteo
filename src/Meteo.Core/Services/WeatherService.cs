@@ -47,16 +47,16 @@ namespace Meteo.Core.Services
             var response = await _httpClient.GetAsync($"current?city={city}&key={_apiKey}");
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Result>(content);
-            // dto = new WeatherDto
-            // {
-            //     City = result.Data.First().City,
-            //     Temperature = result.Data.First().Temperature
-            // };
             dto = new WeatherDto
             {
-                City = city,
-                Temperature = 2
+                City = result.Data.First().City,
+                Temperature = result.Data.First().Temperature
             };
+            // dto = new WeatherDto
+            // {
+            //     City = city,
+            //     Temperature = 2
+            // };
             _cache.Set($"weather:{city}", dto, TimeSpan.FromMinutes(5));
 
             return dto;

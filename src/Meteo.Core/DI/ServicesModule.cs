@@ -1,4 +1,5 @@
 using Autofac;
+using Meteo.Core.EF;
 using Meteo.Core.Repositories;
 
 namespace Meteo.Core.DI
@@ -10,9 +11,9 @@ namespace Meteo.Core.DI
             builder.RegisterAssemblyTypes(typeof(ServicesModule).Assembly)
                 .AsImplementedInterfaces();
 
-            builder.RegisterType<InMemoryCityRepository>()
+            builder.RegisterType<SqlCityRepository>()
                 .As<ICityRepository>()
-                .SingleInstance();
+                .InstancePerLifetimeScope();
         }
     }
 }

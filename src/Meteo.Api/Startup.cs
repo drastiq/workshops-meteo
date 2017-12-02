@@ -7,6 +7,7 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Meteo.Api.Framework;
 using Meteo.Core.DI;
+using Meteo.Core.EF;
 using Meteo.Core.Mapper;
 using Meteo.Core.Repositories;
 using Meteo.Core.Services;
@@ -40,10 +41,15 @@ namespace Meteo.Api
             services.AddLogging();
             services.AddMemoryCache();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
+            services.Configure<SqlOptions>(Configuration.GetSection("sql"));
             // services.AddScoped<IWeatherService,WeatherService>();
             // services.AddScoped<ICityService,CityService>();
             // services.AddSingleton<ICityRepository,InMemoryCityRepository>();
             services.AddSingleton<IMapper>(_ => AutoMapperConfig.GetMapper());
+
+            services.AddEntityFrameworkSqlServer()
+                    .AddEntityFrameworkInMemoryDatabase()
+                    .AddDbContext<MeteoContext>();
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
