@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Meteo.Api.Framework;
+using Meteo.Core.Mapper;
+using Meteo.Core.Repositories;
 using Meteo.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,9 +34,12 @@ namespace Meteo.Api
             services.AddMvc()
                 .AddXmlSerializerFormatters();
             services.AddLogging();
+            services.AddMemoryCache();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
             services.AddScoped<IWeatherService,WeatherService>();
-            services.AddMemoryCache();
+            services.AddScoped<ICityService,CityService>();
+            services.AddSingleton<ICityRepository,InMemoryCityRepository>();
+            services.AddSingleton<IMapper>(_ => AutoMapperConfig.GetMapper());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
