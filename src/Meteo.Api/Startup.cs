@@ -33,6 +33,7 @@ namespace Meteo.Api
             services.AddLogging();
             services.Configure<WeatherServiceOptions>(Configuration.GetSection("weatherService"));
             services.AddScoped<IWeatherService,WeatherService>();
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
