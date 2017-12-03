@@ -1,13 +1,31 @@
 version: "2"
 
 services:
+  start-dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - rabbitmq
+    command: rabbitmq:5672
+
   api:
     image: meteo.api
-    #build: ../src/Meteo.Api
     links:
+      - rabbitmq
       - sql
     ports:
       - '5000:5000'
+
+  service:
+    image: meteo.service
+    links:
+      - rabbitmq
+    ports:
+      - '5050:5050'
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
 
   sql:
     image: microsoft/mssql-server-linux
