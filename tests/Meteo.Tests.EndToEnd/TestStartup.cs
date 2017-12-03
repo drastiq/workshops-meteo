@@ -24,6 +24,7 @@ namespace Meteo.Tests.EndToEnd
                 p.RequireRole("admin");
             }));
             services.AddSingleton<IWeatherService,Services.WeatherService>();
+            services.AddSingleton<ICityService,Services.CityService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
