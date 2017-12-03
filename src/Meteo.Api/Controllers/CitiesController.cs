@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Meteo.Core.Commands;
+using Meteo.Core.RabbitMq;
 using Meteo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,13 @@ namespace Meteo.Api.Controllers
     public class CitiesController : Controller
     {
         private readonly ICityService _cityService;
+        private readonly IBusPublisher _busPublisher;
 
-        public CitiesController(ICityService cityService)
+        public CitiesController(ICityService cityService,
+            IBusPublisher busPublisher)
         {
             _cityService = cityService;
+            _busPublisher = busPublisher;
         }
 
         [HttpGet]
@@ -22,7 +26,8 @@ namespace Meteo.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]AddCity command)
         {
-            await _cityService.AddAsync(command.Name);
+            // await _cityService.AddAsync(command.Name);
+            await _busPublisher.PublishCommandAsync(command);
 
             return Created("cities", null);
         }
