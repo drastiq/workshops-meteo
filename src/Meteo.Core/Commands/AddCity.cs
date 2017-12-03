@@ -1,6 +1,6 @@
 namespace Meteo.Core.Commands
 {
-    public class AddCity
+    public class AddCity : ICommand
     {
         public string Name { get; set; }
     }
