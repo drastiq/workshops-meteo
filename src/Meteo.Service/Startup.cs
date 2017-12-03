@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Meteo.Core.Commands;
+using Meteo.Core.RabbitMq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +32,7 @@ namespace Meteo.Service
             services.AddLogging();
             var builder = new ContainerBuilder();
             builder.Populate(services);
+            builder.AddRabbitMq();
             Container = builder.Build();
 
             return new AutofacServiceProvider(Container);
@@ -44,6 +47,8 @@ namespace Meteo.Service
                 app.UseDeveloperExceptionPage();
             }
             loggerFactory.AddConsole().AddDebug();
+            app.UseRabbitMq()
+                .SubscribeCommand<AddCity>();
             app.UseMvc();
             appLifetime.ApplicationStopped.Register(() => Container.Dispose());
         }

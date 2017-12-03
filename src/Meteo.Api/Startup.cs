@@ -8,7 +8,9 @@ using AutoMapper;
 using Meteo.Api.Framework;
 using Meteo.Core.DI;
 using Meteo.Core.EF;
+using Meteo.Core.Events;
 using Meteo.Core.Mapper;
+using Meteo.Core.RabbitMq;
 using Meteo.Core.Repositories;
 using Meteo.Core.Security;
 using Meteo.Core.Services;
@@ -60,6 +62,7 @@ namespace Meteo.Api
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule<ServicesModule>();
+            builder.AddRabbitMq();
             Container = builder.Build();
 
             return new AutofacServiceProvider(Container);
@@ -82,6 +85,8 @@ namespace Meteo.Api
             // });
             //app.UseExceptionHandler("/error");
             app.UseErrorHandler();
+            app.UseRabbitMq()
+                .SubscribeEvent<CityAdded>();
             app.UseMvc();
             appLifetime.ApplicationStopped.Register(() => Container.Dispose());
         }
