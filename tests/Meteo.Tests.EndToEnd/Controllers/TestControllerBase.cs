@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Meteo.Tests.EndToEnd.Controllers
 {
-    public class TestControllerBase
+    public abstract class TestControllerBase
     {
         protected readonly TestServer Server;
         protected readonly HttpClient Client;
@@ -17,21 +17,22 @@ namespace Meteo.Tests.EndToEnd.Controllers
         public TestControllerBase()
         {
             Server = new TestServer(WebHost.CreateDefaultBuilder()
-                .UseStartup<Startup>());
+                .UseStartup<TestStartup>());
             Client = Server.CreateClient();            
         }
 
-        private async Task<T> GetAsync<T>(string endpoint)
+        protected async Task<T> GetAsync<T>(string endpoint)
             => await DeserializeAsync<T>(await Client.GetAsync(endpoint));
 
-        private async Task<HttpResponseMessage> GetAsync(string endpoint)
+        protected async Task<HttpResponseMessage> GetAsync(string endpoint)
             => await Client.GetAsync(endpoint);
 
-        private async Task<HttpResponseMessage> PostAsync(string endpoint, object data)
+        protected async Task<HttpResponseMessage> PostAsync(string endpoint, object data)
             => await Client.PostAsync(endpoint, GeyPayload(data));
 
         private async Task<T> DeserializeAsync<T>(HttpResponseMessage response)
         {
+            response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(content);
